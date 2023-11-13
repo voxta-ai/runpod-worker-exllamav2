@@ -9,7 +9,6 @@ from schema import INPUT_SCHEMA
 MODEL = inference.Predictor()
 MODEL.setup()
 
-
 def run(job) -> Union[str, Generator[str, None, None]]:
     ### Validate the input
     validated_input = validate(job["input"], INPUT_SCHEMA)
@@ -23,10 +22,16 @@ def run(job) -> Union[str, Generator[str, None, None]]:
     )
 
     for chunk in prediction:
+        text, input_tokens, output_tokens = chunk
         # Uncomment this to preview the predictions in the console
-        # print(chunk, end="")
-        output = chunk
-        yield output
+        # print(text, end="")
+        res = {
+            "text": text,
+            "output_tokens": output_tokens,
+        }
+        if input_tokens > 0:
+            res["input_tokens"] = input_tokens
+        yield res
 
 
 runpod.serverless.start({"handler": run, "return_aggregate_stream": False})
