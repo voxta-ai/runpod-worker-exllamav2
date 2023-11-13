@@ -13,6 +13,7 @@ def run(job) -> Union[str, Generator[str, None, None]]:
     ### Validate the input
     validated_input = validate(job["input"], INPUT_SCHEMA)
     if "errors" in validated_input:
+        yield {"error": validated_input["errors"]}
         return {"error": validated_input["errors"]}
     validated_input = validated_input["validated_input"]
 
@@ -31,7 +32,11 @@ def run(job) -> Union[str, Generator[str, None, None]]:
         }
         if input_tokens > 0:
             res["input_tokens"] = input_tokens
+        
         yield res
 
 
-runpod.serverless.start({"handler": run, "return_aggregate_stream": True})
+runpod.serverless.start({
+    "handler": run,
+    "return_aggregate_stream": False
+})

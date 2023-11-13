@@ -62,13 +62,14 @@ class Predictor:
         input_ids = self.tokenizer.encode(settings["prompt"])
         output = self.streamGenerate(input_ids, settings["max_new_tokens"], settings["stop"])
         input_tokens = len(input_ids)
-        tokens = 0
+        print(f"Inference started: Received {input_tokens} tokens")
+        output_tokens = 0
         for chunk in output:
-            tokens = tokens + 1
+            output_tokens = output_tokens + 1
             yield chunk, input_tokens, 1
             input_tokens = 0
         time_end = time.time()
-        print(f"Inference complete: {tokens} tokens in {time_end - time_begin} seconds")
+        print(f"Inference complete: Generated {output_tokens} tokens in {time_end - time_begin} seconds")
 
     def streamGenerate(self, input_ids, max_new_tokens, stop_words):
         generator = ExLlamaV2StreamingGenerator(self.model, self.cache, self.tokenizer)
