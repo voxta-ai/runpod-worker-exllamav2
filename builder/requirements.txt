@@ -2,11 +2,11 @@
 # Reccomended to lock the version number to avoid unexpected changes.
 
 runpod==1.3.3
-exllamav2==0.0.6
+exllamav2==0.0.8
 pandas
 ninja
 fastparquet
-torch>=2.0.1
-safetensors>=0.3.2
-sentencepiece>=0.1.97
+torch>=2.1.0
+safetensors>=0.4.0
+sentencepiece>=0.1.99
 huggingface-hub==0.16.4

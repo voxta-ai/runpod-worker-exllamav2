@@ -1,6 +1,5 @@
 import os
-from exllamav2.model import ExLlamaV2, ExLlamaV2Cache, ExLlamaV2Config, ExLlamaV2Lora
-from exllamav2.tokenizer import ExLlamaV2Tokenizer
+from exllamav2 import ExLlamaV2, ExLlamaV2Cache, ExLlamaV2Config, ExLlamaV2Tokenizer, ExLlamaV2Lora
 from exllamav2.generator import (
     ExLlamaV2Sampler,
     ExLlamaV2StreamingGenerator,
@@ -13,7 +12,6 @@ MODEL_REVISION = os.environ.get("MODEL_REVISION", "main")
 LORA_NAME = os.environ.get("LORA_ADAPTER_NAME", None)
 LORA_REVISION = os.environ.get("LORA_ADAPTER_REVISION", "main")
 MODEL_BASE_PATH = os.environ.get("MODEL_BASE_PATH", "/runpod-volume/")
-
 
 class Predictor:
     def setup(self):
