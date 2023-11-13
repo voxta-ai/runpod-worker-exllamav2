@@ -23,9 +23,10 @@ def run(job) -> Union[str, Generator[str, None, None]]:
     )
 
     for chunk in prediction:
-        print(chunk, end="")
+        # Uncomment this to preview the predictions in the console
+        # print(chunk, end="")
         output = chunk
         yield output
 
 
-runpod.serverless.start({"handler": run, "return_aggregate_stream": True})
+runpod.serverless.start({"handler": run, "return_aggregate_stream": False})

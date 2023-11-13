@@ -10,4 +10,5 @@ INPUT_SCHEMA = {
     "token_repetition_penalty": {"type": float, "required": False, "default": 1.15},
     "token_repetition_range": {"type": int, "required": False, "default": -1},
     "token_repetition_decay": {"type": int, "required": False, "default": 0},
+    "stop": {"type": list, "required": False, "default": []},
 }
