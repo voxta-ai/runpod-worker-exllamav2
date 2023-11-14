@@ -81,7 +81,8 @@ class Predictor:
     def streamGenerate(self, input_ids, max_new_tokens, stop_words):
         generator = ExLlamaV2StreamingGenerator(self.model, self.cache, self.tokenizer)
         generator.warmup()
-        generator.set_stop_conditions(stop_words)
+        if stop_words:
+            generator.set_stop_conditions(stop_words)
         generator.begin_stream(input_ids, self.settings, loras=self.lora_adapter)
         generated_tokens = 0
 
