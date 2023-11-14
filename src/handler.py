@@ -9,32 +9,39 @@ from schema import INPUT_SCHEMA
 MODEL = inference.Predictor()
 MODEL.setup()
 
+### Create a logger
+log = runpod.RunPodLogger()
+
 def run(job) -> Union[str, Generator[str, None, None]]:
-    ### Validate the input
-    validated_input = validate(job["input"], INPUT_SCHEMA)
-    if "errors" in validated_input:
-        yield {"error": validated_input["errors"]}
-        return {"error": validated_input["errors"]}
-    validated_input = validated_input["validated_input"]
+    try:
+        ### Validate the input
+        validated_input = validate(job["input"], INPUT_SCHEMA)
+        if "errors" in validated_input:
+            yield {"error": validated_input["errors"]}
+            return {"error": validated_input["errors"]}
+        validated_input = validated_input["validated_input"]
 
-    ### Run the model depending on stream
-    prediction = MODEL.predict(
-        settings=validated_input
-    )
+        ### Run the model depending on stream
+        prediction = MODEL.predict(
+            settings=validated_input
+        )
 
-    for chunk in prediction:
-        text, input_tokens, output_tokens = chunk
-        # Uncomment this to preview the predictions in the console
-        # print(text, end="")
-        res = {
-            "text": text,
-            "output_tokens": output_tokens,
-        }
-        if input_tokens > 0:
-            res["input_tokens"] = input_tokens
-        
-        yield res
-
+        for chunk in prediction:
+            text, input_tokens, output_tokens = chunk
+            # Uncomment this to preview the predictions in the console
+            # log.debug(text, end="")
+            res = {
+                "text": text,
+                "output_tokens": output_tokens,
+            }
+            if input_tokens > 0:
+                res["input_tokens"] = input_tokens
+            
+            yield res
+    except Exception as e:
+        log.error(str(e))
+        yield {"error": str(e)}
+        return {"error": str(e)}
 
 runpod.serverless.start({
     "handler": run,
