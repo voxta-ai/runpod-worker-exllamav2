@@ -56,6 +56,13 @@ class Predictor:
         self.settings.token_repetition_penalty = settings["token_repetition_penalty"]
         self.settings.token_repetition_range = settings["token_repetition_range"]
         self.settings.token_repetition_decay = settings["token_repetition_decay"]
+        self.settings.min_p = settings["min_p"]
+        self.settings.tfs = settings["tfs"]
+        self.settings.typical = settings["typical"]
+        self.settings.max_new_tokens = settings["max_new_tokens"]
+        self.settings.mirostat = settings["mirostat"]
+        self.settings.mirostat_tau = settings["mirostat_tau"]
+        self.settings.mirostat_eta = settings["mirostat_eta"]
 
         output = None
         time_begin = time.time()
@@ -83,5 +90,5 @@ class Predictor:
             generated_tokens += 1
             yield chunk
 
-            if eos or generated_tokens == max_new_tokens or chunk == "</s>":
+            if eos or generated_tokens >= max_new_tokens or chunk == "</s>":
                 break
