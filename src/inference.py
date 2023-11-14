@@ -63,11 +63,12 @@ class Predictor:
         self.settings.mirostat = settings["mirostat"]
         self.settings.mirostat_tau = settings["mirostat_tau"]
         self.settings.mirostat_eta = settings["mirostat_eta"]
+        stop_words = settings["stop"]
 
         output = None
         time_begin = time.time()
         input_ids = self.tokenizer.encode(settings["prompt"])
-        output = self.streamGenerate(input_ids, settings["max_new_tokens"], settings["stop"])
+        output = self.streamGenerate(input_ids, settings["max_new_tokens"], stop_words)
         input_tokens = len(input_ids)
         print(f"Inference started: Received {input_tokens} tokens")
         output_tokens = 0
@@ -82,6 +83,8 @@ class Predictor:
         generator = ExLlamaV2StreamingGenerator(self.model, self.cache, self.tokenizer)
         generator.warmup()
         if stop_words:
+            if not isinstance(stop_words, list):
+                raise TypeError(f"stop_words must be a list, received {type(stop_words)}")
             generator.set_stop_conditions(stop_words)
         generator.begin_stream(input_ids, self.settings, loras=self.lora_adapter)
         generated_tokens = 0
