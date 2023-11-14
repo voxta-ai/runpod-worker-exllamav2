@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import traceback
 import inference
 import runpod
 from runpod.serverless.utils.rp_validator import validate
@@ -39,9 +40,13 @@ def run(job) -> Union[str, Generator[str, None, None]]:
             
             yield res
     except Exception as e:
-        log.error(str(e))
-        yield {"error": str(e)}
-        return {"error": str(e)}
+        error_trace = traceback.format_exc()  # This gets the full traceback
+        log.error(error_trace)
+        exception_type = type(e).__name__  # Gets the type of the exception
+        error_message = str(e)  # Gets the error message
+        detailed_error = f"{exception_type}: {error_message}" if error_message else exception_type
+        yield {"error": detailed_error}
+        return {"error": detailed_error}
 
 runpod.serverless.start({
     "handler": run,
